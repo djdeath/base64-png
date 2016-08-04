@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/org/gnome/Base64Png">
+    <file preprocess="xml-stripblanks">Base64Png.ui</file>
+  </gresource>
+</gresources>
