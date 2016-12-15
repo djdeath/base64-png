@@ -34,19 +34,21 @@ let saveDialog = $('save-dialog');
 saveDialog.add_button("_Open", Gtk.ResponseType.OK);
 saveDialog.add_button("_Cancel", Gtk.ResponseType.CANCEL);
 
-let saveFile = function(filename) {
+let saveFile = function(uri) {
   let pixbuf = $('image').pixbuf;
-  if (filename.match(/.*\.png/))
-    pixbuf.savev(filename, "png", [], []);
-  else if (filename.match(/.*\.jpg/) ||
-           filename.match(/.*\.jpeg/))
-    pixbuf.savev(filename, "jpeg", [], []);
+  let file = Gio.File.new_for_uri(uri);
+  let path = file.get_path();
+  if (path.match(/.*\.png/))
+    pixbuf.savev(path, "png", [], []);
+  else if (path.match(/.*\.jpg/) ||
+           path.match(/.*\.jpeg/))
+    pixbuf.savev(path, "jpeg", [], []);
   else
-    pixbuf.savev(filename + '.png', "png", [], []);
+    pixbuf.savev(path + '.png', "png", [], []);
 };
 
 saveDialog.connect('response', function() {
-  saveFile(saveDialog.get_current_name());
+  saveFile(saveDialog.get_uri());
   saveDialog.hide();
 });
 saveDialog.connect('delete-event', function() {
