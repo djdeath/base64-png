@@ -5,14 +5,14 @@ const Gtk = imports.gi.Gtk;
 
 Gio.resources_register(Gio.resource_load('org.gnome.Base64Png.gresource'));
 
-Gtk.init(null, null);
+Gtk.init(null);
 
 let builder = Gtk.Builder.new_from_resource('/org/gnome/Base64Png/Base64Png.ui');
 let $ = function(name) { return builder.get_object(name); };
 
 
 $('window').show();
-$('window').connect('destroy', Gtk.main_quit);
+$('window').connect('destroy', function() { Gtk.main_quit() });
 
 $('textview').buffer.connect('changed', function(buffer) {
   $('image').set_from_icon_name('image-missing', Gtk.IconSize.DIALOG);
