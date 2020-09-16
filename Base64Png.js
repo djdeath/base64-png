@@ -1,6 +1,7 @@
 const GLib = imports.gi.GLib;
 const Gio = imports.gi.Gio;
 const GdkPixbuf = imports.gi.GdkPixbuf;
+const Gdk = imports.gi.Gdk;
 const Gtk = imports.gi.Gtk;
 
 Gio.resources_register(Gio.resource_load('org.gnome.Base64Png.gresource'));
@@ -14,9 +15,8 @@ let $ = function(name) { return builder.get_object(name); };
 $('window').show();
 $('window').connect('destroy', function() { Gtk.main_quit() });
 
-$('textview').buffer.connect('changed', function(buffer) {
-  $('image').set_from_icon_name('image-missing', Gtk.IconSize.DIALOG);
-
+function reloadImage() {
+  let buffer = $('textview').get_buffer();
   let text = buffer.get_text(buffer.get_start_iter(), buffer.get_end_iter(), false);
   let data = GLib.base64_decode(text);
 
@@ -24,10 +24,28 @@ $('textview').buffer.connect('changed', function(buffer) {
     let loader = new GdkPixbuf.PixbufLoader();
     loader.write(data);
     loader.close();
-    $('image').set_from_pixbuf(loader.get_pixbuf());
+
+    let scale = $('scale-button').get_value();
+
+    let unscaled = loader.get_pixbuf();
+    let scaled = unscaled.scale_simple(unscaled.get_width() * scale,
+                                       unscaled.get_height() * scale,
+                                       GdkPixbuf.InterpType.NEAREST);
+
+    $('image').set_from_pixbuf(scaled);
   } catch (e) {
     log(e);
   }
+}
+
+$('textview').buffer.connect('changed', function(buffer) {
+  $('image').set_from_icon_name('image-missing', Gtk.IconSize.DIALOG);
+
+  reloadImage();
+});
+
+$('scale-button').connect('value-changed', function() {
+  reloadImage();
 });
 
 let saveDialog = $('save-dialog');
