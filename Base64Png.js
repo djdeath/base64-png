@@ -1,3 +1,6 @@
+imports.gi.versions.Gdk = '3.0';
+imports.gi.versions.Gtk = '3.0';
+
 const GLib = imports.gi.GLib;
 const Gio = imports.gi.Gio;
 const GdkPixbuf = imports.gi.GdkPixbuf;
