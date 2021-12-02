@@ -23,6 +23,7 @@ function reloadImage() {
   let text = buffer.get_text(buffer.get_start_iter(), buffer.get_end_iter(), false);
   let data = GLib.base64_decode(text);
 
+  let headerbar = $('headerbar');
   try {
     let loader = new GdkPixbuf.PixbufLoader();
     loader.write(data);
@@ -31,12 +32,15 @@ function reloadImage() {
     let scale = $('scale-button').get_value();
 
     let unscaled = loader.get_pixbuf();
+    headerbar.set_subtitle('Image ' + unscaled.get_width() + 'x' + unscaled.get_height());
+
     let scaled = unscaled.scale_simple(unscaled.get_width() * scale,
                                        unscaled.get_height() * scale,
                                        GdkPixbuf.InterpType.NEAREST);
 
     $('image').set_from_pixbuf(scaled);
   } catch (e) {
+    headerbar.set_subtitle('No image');
     log(e);
   }
 }
